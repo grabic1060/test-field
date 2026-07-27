@@ -1,0 +1,25 @@
+{
+  "name": "llm-self-healing-testbed",
+  "version": "1.0.0",
+  "description": "Test field & benchmark suite for LLM-based Self-Healing AI systems",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:json": "node scripts/run-tests.js",
+    "reset": "node scripts/reset-bugs.js",
+    "reset:clean": "node scripts/reset-bugs.js --clean",
+    "prompt": "node scripts/prompt-generator.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "self-healing",
+    "llm",
+    "ai-agent",
+    "testbed",
+    "benchmark",
+    "debugging"
+  ],
+  "author": "Antigravity Self-Healing AI Lab",
+  "license": "MIT"
+}

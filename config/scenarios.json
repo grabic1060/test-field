@@ -1,0 +1,47 @@
+[
+  {
+    "id": "scenario-1",
+    "name": "User Service - Null Pointer Exception",
+    "difficulty": "Easy",
+    "category": "Null Safety / Property Access",
+    "targetFile": "src/modules/userService.js",
+    "testFile": "tests/userService.test.js",
+    "description": "TypeError occurs when trying to access properties on undefined objects (e.g., user.settings.theme.darkMode or user.address.zipCode)."
+  },
+  {
+    "id": "scenario-2",
+    "name": "Payment Gateway - Boundary & Off-by-One Error",
+    "difficulty": "Medium",
+    "category": "Logic / Boundary Condition",
+    "targetFile": "src/modules/paymentGateway.js",
+    "testFile": "tests/paymentGateway.test.js",
+    "description": "Tiered discount calculation fails on exact threshold values ($1,000) and fee array indexing accesses out-of-bound element returning NaN."
+  },
+  {
+    "id": "scenario-3",
+    "name": "Data Processor - Async Flow & Unhandled Promises",
+    "difficulty": "Medium",
+    "category": "Async / Event Loop",
+    "targetFile": "src/modules/dataProcessor.js",
+    "testFile": "tests/dataProcessor.test.js",
+    "description": "Batch user data fetching uses Array.prototype.forEach with async callback without awaiting promises, causing early empty return."
+  },
+  {
+    "id": "scenario-4",
+    "name": "Auth Middleware - Inverted Token Expiry & Loose Checking",
+    "difficulty": "Hard",
+    "category": "Security / Business Logic",
+    "targetFile": "src/modules/authMiddleware.js",
+    "testFile": "tests/authMiddleware.test.js",
+    "description": "JWT expiration condition is inverted (validating expired tokens instead of active ones) and role authorization uses incorrect comparison."
+  },
+  {
+    "id": "scenario-5",
+    "name": "API Router - Exception Handling & Status Code",
+    "difficulty": "Hard",
+    "category": "Error Handling / Web API",
+    "targetFile": "src/modules/apiRouter.js",
+    "testFile": "tests/apiRouter.test.js",
+    "description": "Custom error middleware catches validation errors but omits setting response status codes and fails to format JSON error payload."
+  }
+]

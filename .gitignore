@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Logs & Diagnostics generated at runtime
+test_results.json
+llm_prompt_sample.txt
+npm-debug.log*
+
+# System & OS Files
+.DS_Store
+Thumbs.db
