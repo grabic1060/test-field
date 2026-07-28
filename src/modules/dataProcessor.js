@@ -9,16 +9,9 @@ export async function fetchRemoteUser(id) {
 }
 
 export async function processUserBatch(userIds) {
-  const results = [];
-
-  userIds.forEach(async (id) => {
-    const user = await fetchRemoteUser(id);
-    results.push(user);
-  });
-
-  return results;
+  return Promise.all(userIds.map((id) => fetchRemoteUser(id)));
 }
 
 export async function aggregateScores(scores) {
-  return scores.reduce((acc, score) => acc + score.value);
+  return scores.reduce((acc, score) => acc + (score?.value ?? 0), 0);
 }
