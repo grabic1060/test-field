@@ -2,32 +2,30 @@
  * User Service Module (Buggy Version Backup)
  */
 
-export function getUserDisplayInfo(user) {
-  // BUG: Direct property access on potentially undefined nested objects
-  const name = user.profile.name.toUpperCase();
-  const email = user.email.toLowerCase();
-  const themeMode = user.settings.theme.mode;
+export function getUserDisplayInfo(user = {}) {
+  const name = user.profile?.name?.toUpperCase() ?? 'UNKNOWN';
+  const email = user.email?.toLowerCase() ?? 'unknown@example.com';
+  const themeMode = user.settings?.theme?.mode ?? 'light';
 
   return {
     displayName: `${name} (${email})`,
     theme: themeMode,
-    isVip: user.vipStatus || false
+    isVip: Boolean(user.vipStatus)
   };
 }
 
-export function formatUserAddress(user) {
-  // BUG: Accessing user.address without checking if address exists
-  const street = user.address.street;
-  const city = user.address.city.toUpperCase();
-  const zip = user.address.zipCode;
+export function formatUserAddress(user = {}) {
+  const street = user.address?.street ?? '';
+  const city = user.address?.city?.toUpperCase() ?? '';
+  const zip = user.address?.zipCode ?? '';
 
-  return `${street}, ${city} ${zip}`;
+  return [street, city, zip].filter(Boolean).join(' ');
 }
 
-export function calculateAccountAgeYears(user) {
-  if (!user) return 0;
-  // BUG: user.createdAt might be missing or invalid string, crashes on new Date() or .getFullYear()
-  const createdYear = new Date(user.createdAt).getFullYear();
+export function calculateAccountAgeYears(user = {}) {
+  const createdAt = new Date(user.createdAt);
+  if (Number.isNaN(createdAt.getTime())) return 0;
+
   const currentYear = new Date().getFullYear();
-  return currentYear - createdYear;
+  return currentYear - createdAt.getFullYear();
 }
