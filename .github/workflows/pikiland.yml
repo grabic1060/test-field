@@ -70,6 +70,8 @@ jobs:
           SLACK_WEBHOOK_URL: "${{ github.event.inputs.slack_webhook_url }}"
           AI_MODEL: "${{ github.event.inputs.ai_model }}"
           PIKILAND_AI_BASE_URL: "${{ github.event.inputs.ai_base_url }}"
+          OPENAI_BASE_URL: "${{ github.event.inputs.ai_base_url }}"
+          ANTHROPIC_BASE_URL: "${{ github.event.inputs.ai_base_url }}"
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY || secrets.PIKILAND_AI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY || secrets.PIKILAND_AI_API_KEY }}"
         run: |
