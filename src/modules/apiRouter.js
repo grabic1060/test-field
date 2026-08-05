@@ -10,6 +10,21 @@ export class ValidationError extends Error {
   }
 }
 
+function formatValidationDetails(err) {
+  if (Array.isArray(err?.errors) && err.errors.length > 0) {
+    return err.errors
+      .map((e) => e?.msg)
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  if (err instanceof ValidationError) {
+    return `${err.field}: ${err.message}`;
+  }
+
+  return err?.message || 'Unknown error';
+}
+
 export function handleApiRequest(req) {
   try {
     if (!req.body || !req.body.email) {
@@ -24,14 +39,14 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const isValidationError = err instanceof ValidationError;
 
     return {
-      status: 500,
+      status: isValidationError ? 400 : 500,
       body: {
-        error: err.name,
-        message: err.message,
-        details: formattedDetails
+        error: err.name || 'Error',
+        message: err.message || 'Internal Server Error',
+        details: formatValidationDetails(err)
       }
     };
   }
