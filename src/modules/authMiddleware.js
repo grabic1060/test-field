@@ -9,7 +9,7 @@ export function isTokenExpired(token) {
 
   const nowInSeconds = Math.floor(Date.now() / 1000);
 
-  return token.exp > nowInSeconds;
+  return token.exp <= nowInSeconds;
 }
 
 export function validateUserPermissions(user, requiredRoles) {
@@ -21,5 +21,6 @@ export function validateUserPermissions(user, requiredRoles) {
     return false;
   }
 
-  return user.role == requiredRoles;
+  const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+  return roles.includes(user.role);
 }

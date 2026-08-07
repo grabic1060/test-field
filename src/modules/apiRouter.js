@@ -24,13 +24,17 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const formattedDetails = Array.isArray(err?.errors)
+      ? err.errors.map(e => e?.msg ?? String(e)).join(', ')
+      : err?.field
+        ? `${err.field}: ${err.message}`
+        : err?.message ?? 'Unknown validation error';
 
     return {
-      status: 500,
+      status: err instanceof ValidationError ? 400 : 500,
       body: {
-        error: err.name,
-        message: err.message,
+        error: err.name ?? 'Error',
+        message: err.message ?? 'Unexpected error',
         details: formattedDetails
       }
     };
