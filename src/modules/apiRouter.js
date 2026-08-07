@@ -1,5 +1,5 @@
 /**
- * API Router Module (Buggy Backup)
+ * API Router Module
  */
 
 export class ValidationError extends Error {
@@ -12,10 +12,10 @@ export class ValidationError extends Error {
 
 export function handleApiRequest(req) {
   try {
-    if (!req.body || !req.body.email) {
+    if (!req?.body || !req.body.email) {
       throw new ValidationError('Email is required', 'email');
     }
-    if (req.body.age < 18) {
+    if (typeof req.body.age !== 'number' || req.body.age < 18) {
       throw new ValidationError('Must be at least 18 years old', 'age');
     }
 
@@ -24,14 +24,16 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const details = err instanceof ValidationError
+      ? `${err.field}: ${err.message}`
+      : '요청 처리 중 문제가 발생했습니다.';
 
     return {
-      status: 500,
+      status: 400,
       body: {
         error: err.name,
         message: err.message,
-        details: formattedDetails
+        details
       }
     };
   }
