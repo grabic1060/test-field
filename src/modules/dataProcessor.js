@@ -1,5 +1,5 @@
 /**
- * Data Processor Module (Buggy Backup)
+ * Data Processor Module
  */
 
 export async function fetchRemoteUser(id) {
@@ -8,17 +8,11 @@ export async function fetchRemoteUser(id) {
   return { id, name: `User_${id}`, processedAt: new Date().toISOString() };
 }
 
-export async function processUserBatch(userIds) {
-  const results = [];
-
-  userIds.forEach(async (id) => {
-    const user = await fetchRemoteUser(id);
-    results.push(user);
-  });
-
+export async function processUserBatch(userIds = []) {
+  const results = await Promise.all(userIds.map(async (id) => fetchRemoteUser(id)));
   return results;
 }
 
-export async function aggregateScores(scores) {
-  return scores.reduce((acc, score) => acc + score.value);
+export async function aggregateScores(scores = []) {
+  return scores.reduce((acc, score) => acc + (Number(score?.value) || 0), 0);
 }
