@@ -7,12 +7,13 @@ export class ValidationError extends Error {
     super(message);
     this.name = 'ValidationError';
     this.field = field;
+    this.errors = [{ msg: message, field }];
   }
 }
 
 export function handleApiRequest(req) {
   try {
-    if (!req.body || !req.body.email) {
+    if (!req?.body || !req.body.email) {
       throw new ValidationError('Email is required', 'email');
     }
     if (req.body.age < 18) {
@@ -24,10 +25,14 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const formattedDetails = Array.isArray(err.errors)
+      ? err.errors.map(e => e.msg).join(', ')
+      : err.message;
+
+    const status = err instanceof ValidationError ? 400 : 500;
 
     return {
-      status: 500,
+      status,
       body: {
         error: err.name,
         message: err.message,
