@@ -3,31 +3,29 @@
  */
 
 export function getUserDisplayInfo(user) {
-  // BUG: Direct property access on potentially undefined nested objects
-  const name = user.profile.name.toUpperCase();
-  const email = user.email.toLowerCase();
-  const themeMode = user.settings.theme.mode;
+  const name = user?.profile?.name?.toUpperCase?.() ?? 'UNKNOWN';
+  const email = user?.email?.toLowerCase?.() ?? 'unknown@example.com';
+  const themeMode = user?.settings?.theme?.mode ?? 'light';
 
   return {
     displayName: `${name} (${email})`,
     theme: themeMode,
-    isVip: user.vipStatus || false
+    isVip: user?.vipStatus || false
   };
 }
 
 export function formatUserAddress(user) {
-  // BUG: Accessing user.address without checking if address exists
-  const street = user.address.street;
-  const city = user.address.city.toUpperCase();
-  const zip = user.address.zipCode;
+  const street = user?.address?.street ?? 'Unknown Street';
+  const city = user?.address?.city?.toUpperCase?.() ?? 'UNKNOWN';
+  const zip = user?.address?.zipCode ?? '00000';
 
   return `${street}, ${city} ${zip}`;
 }
 
 export function calculateAccountAgeYears(user) {
-  if (!user) return 0;
-  // BUG: user.createdAt might be missing or invalid string, crashes on new Date() or .getFullYear()
-  const createdYear = new Date(user.createdAt).getFullYear();
+  if (!user?.createdAt) return 0;
+  const createdDate = new Date(user.createdAt);
+  if (Number.isNaN(createdDate.getTime())) return 0;
   const currentYear = new Date().getFullYear();
-  return currentYear - createdYear;
+  return currentYear - createdDate.getFullYear();
 }

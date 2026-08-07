@@ -24,10 +24,12 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const formattedDetails = err instanceof ValidationError
+      ? err.message
+      : (Array.isArray(err.errors) ? err.errors.map(e => e.msg).join(', ') : 'Unexpected error');
 
     return {
-      status: 500,
+      status: err instanceof ValidationError ? 400 : 500,
       body: {
         error: err.name,
         message: err.message,
