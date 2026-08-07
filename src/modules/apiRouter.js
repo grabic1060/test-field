@@ -24,10 +24,12 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const formattedDetails = Array.isArray(err.errors)
+      ? err.errors.map(e => e.msg).join(', ')
+      : err.message;
 
     return {
-      status: 500,
+      status: 400,
       body: {
         error: err.name,
         message: err.message,
