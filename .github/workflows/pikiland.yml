@@ -30,6 +30,9 @@ on:
       ralph_max_retries:
         description: 'Ralph Loop max retries cap'
         required: false
+      pikiland_server_url:
+        description: 'PikiLand Web Server URL (HTTPS Port 443)'
+        required: false
 
 jobs:
   pikiland-patch:
@@ -67,6 +70,7 @@ jobs:
           PIKILAND_WORKSPACE_PATH: "${{ github.workspace }}"
           PIKILAND_HARNESS_CMD: "${{ github.event.inputs.harness_cmd }}"
           PIKILAND_RALPH_MAX_RETRIES: "${{ github.event.inputs.ralph_max_retries }}"
+          PIKILAND_SERVER_URL: "${{ github.event.inputs.pikiland_server_url }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           GITHUB_REPOSITORY: "${{ github.repository }}"
           SLACK_WEBHOOK_URL: "${{ github.event.inputs.slack_webhook_url }}"
