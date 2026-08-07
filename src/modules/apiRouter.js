@@ -24,14 +24,16 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const details = err instanceof ValidationError
+      ? [err.field, err.message].filter(Boolean).join(': ')
+      : err?.message ?? 'Unknown error';
 
     return {
-      status: 500,
+      status: err instanceof ValidationError ? 400 : 500,
       body: {
         error: err.name,
         message: err.message,
-        details: formattedDetails
+        details
       }
     };
   }
