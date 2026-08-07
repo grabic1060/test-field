@@ -12,7 +12,7 @@ export class ValidationError extends Error {
 
 export function handleApiRequest(req) {
   try {
-    if (!req.body || !req.body.email) {
+    if (!req?.body?.email) {
       throw new ValidationError('Email is required', 'email');
     }
     if (req.body.age < 18) {
@@ -24,14 +24,14 @@ export function handleApiRequest(req) {
       body: { success: true, user: req.body }
     };
   } catch (err) {
-    const formattedDetails = err.errors.map(e => e.msg).join(', ');
+    const details = err instanceof ValidationError ? err.message : 'Internal Server Error';
 
     return {
-      status: 500,
+      status: err instanceof ValidationError ? 400 : 500,
       body: {
         error: err.name,
         message: err.message,
-        details: formattedDetails
+        details
       }
     };
   }
