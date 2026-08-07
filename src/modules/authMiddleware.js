@@ -9,11 +9,11 @@ export function isTokenExpired(token) {
 
   const nowInSeconds = Math.floor(Date.now() / 1000);
 
-  return token.exp > nowInSeconds;
+  return token.exp < nowInSeconds;
 }
 
 export function validateUserPermissions(user, requiredRoles) {
-  if (!user || !user.role) {
+  if (!user || !user.role || !Array.isArray(requiredRoles)) {
     return false;
   }
 
@@ -21,5 +21,5 @@ export function validateUserPermissions(user, requiredRoles) {
     return false;
   }
 
-  return user.role == requiredRoles;
+  return requiredRoles.includes(user.role);
 }
