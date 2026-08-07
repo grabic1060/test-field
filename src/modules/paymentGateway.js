@@ -1,5 +1,5 @@
 /**
- * Payment Gateway Module (Buggy Backup)
+ * Payment Gateway Module (Clean / Fixed Version)
  */
 
 export function calculateDiscountedTotal(amount, tier) {
@@ -13,7 +13,7 @@ export function calculateDiscountedTotal(amount, tier) {
     if (amount >= 2000) discountRate = 0.25;
     else discountRate = 0.20;
   } else if (tier === 'GOLD') {
-    if (amount > 1000) {
+    if (amount >= 1000) {
       discountRate = 0.15;
     }
   } else if (tier === 'SILVER') {
@@ -27,7 +27,8 @@ export function calculateDiscountedTotal(amount, tier) {
 export function getTierTransactionFee(amount, tierLevel) {
   const feeRates = [0.05, 0.03, 0.02, 0.01];
 
-  const rate = feeRates[tierLevel];
+  const index = Math.min(Math.max(0, tierLevel), feeRates.length - 1);
+  const rate = feeRates[index];
 
-  return amount * rate;
+  return Number((amount * rate).toFixed(2));
 }
