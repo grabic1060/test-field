@@ -280,6 +280,7 @@ const HTML_PAGE = `<!DOCTYPE html>
       </div>
     </div>
     <div class="btn-group">
+      <button class="btn-danger" onclick="fetch('/trigger-error').then(r=>r.json()).then(d=>alert('Error Triggered: '+JSON.stringify(d)))">🔥 Trigger Production Error</button>
       <button class="btn-primary" onclick="runDiagnostics()">▶ Run Diagnostics</button>
       <button class="btn-danger" onclick="resetBugs(false)">🐞 Inject Bugs</button>
       <button class="btn-success" onclick="resetBugs(true)">✨ Restore Clean</button>
@@ -404,8 +405,36 @@ const HTML_PAGE = `<!DOCTYPE html>
 </body>
 </html>`;
 
+function writeProductionLog(err) {
+  const timeStr = new Date().toISOString();
+  const logMessage = `${timeStr} ERROR [http-worker-pool] UnhandledException: ${err.stack || err}\n`;
+  console.error(logMessage);
+  try {
+    const logDir = '/var/log/test-app';
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+    fs.appendFileSync(path.join(logDir, 'app.log'), logMessage);
+  } catch (e) {
+    // fallback log write
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   const url = req.url;
+
+  if (url === '/trigger-error' || url === '/error' || url.includes('error=true') || req.headers['x-trigger-error']) {
+    const err = new TypeError("Cannot read properties of undefined (reading 'processPayment')\n    at PaymentService.processPayment (/home/yoon.linux/test-field/src/payment.js:42:12)\n    at OrderController.handleCheckout (/home/yoon.linux/test-field/src/controller.js:88:25)\n    at Server.<anonymous> (/home/yoon.linux/test-field/server.js:415:9)");
+    writeProductionLog(err);
+
+    res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({
+      status: 500,
+      error: "InternalServerError",
+      message: "An unhandled exception occurred in PaymentService: Cannot read properties of undefined (reading 'processPayment')"
+    }));
+    return;
+  }
 
   if (url === '/' || url === '/index.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
