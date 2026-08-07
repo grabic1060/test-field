@@ -8,8 +8,7 @@ export function isTokenExpired(token) {
   }
 
   const nowInSeconds = Math.floor(Date.now() / 1000);
-
-  return token.exp > nowInSeconds;
+  return token.exp <= nowInSeconds;
 }
 
 export function validateUserPermissions(user, requiredRoles) {
@@ -21,5 +20,7 @@ export function validateUserPermissions(user, requiredRoles) {
     return false;
   }
 
-  return user.role == requiredRoles;
+  return Array.isArray(requiredRoles)
+    ? requiredRoles.includes(user.role)
+    : user.role === requiredRoles;
 }
